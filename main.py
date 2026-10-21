@@ -95,7 +95,7 @@ a{{color:#c9803c}}
 .btn{{display:inline-block;background:none;border:1px solid #c9803c;color:#c9803c;padding:5px 10px;font-size:12px;cursor:pointer;text-decoration:none;border-radius:2px}}
 .wrap{{overflow-x:auto}}
 </style></head><body>
-<header><h1>Leads — {name}</h1><span class="badge">{count} lead{'s' if count != 1 else ''} · updated {now}</span></header>
+<header><h1>Leads — {name}</h1><span class="badge">{leadword} · updated {now}</span></header>
 <div class="wrap">{rows}</div>
 </body></html>"""
 
@@ -126,7 +126,9 @@ def leads(slug: str, key: str = ""):
             message=html.escape(message), action=action))
     table = ("<table><tr><th>When</th><th>Who</th><th>What</th><th>Message</th><th></th></tr>" + "".join(out) + "</table>"
              if out else '<div class="empty">No leads yet. They will appear here the moment someone uses the quote tool or contact form on the website.</div>')
+    leadword = f"{len(out)} lead" if len(out) == 1 else f"{len(out)} leads"
     return PAGE.format(name=html.escape(client["name"]), count=len(out),
+                       leadword=leadword,
                        now=datetime.now(timezone.utc).strftime("%d %b %H:%M UTC"), rows=table)
 
 @app.get("/leads/{slug}/done/{lead_id}")
